@@ -13,7 +13,7 @@ ENV NETCDF4_VERSION 4.4.1
 RUN apt-get update && apt-get install -y byacc bison diffutils flex make
 
 # grab some convenience packages for using it as a build "machine"
-RUN apt-get install -y vim svn git
+RUN apt-get install -y vim
 
 # get ready to build things
 RUN mkdir -p /usr/man/man1
