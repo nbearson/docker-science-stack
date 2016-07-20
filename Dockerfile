@@ -2,8 +2,8 @@
 # gfortran, hdf4, hdf5, netcdf4
 
 # NOTE: nbearson/gfortran is a modified version of the official
-# docker gcc image that includes 6.1 support. Now that the official
-# image includes fortran, this line should change once a new build
+# docker gcc image that includes gfortran. Now that the official
+# image also includes gfortran, this line should change once a new build
 # of the gcc image is pushed to dockerhub.
 # to...
 # FROM gcc
