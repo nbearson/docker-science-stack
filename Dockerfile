@@ -14,7 +14,8 @@ ENV JPEG_VERSION 6b
 ENV SZIP_VERSION 2.1
 ENV HDF4_VERSION 4.2.12
 ENV HDF5_VERSION 1.8.17
-ENV NETCDF4_VERSION 4.4.1 
+ENV NC4F_VERSION 4.4.4
+ENV NC4C_VERSION 4.4.1 
 
 # grab some packages we need
 RUN apt-get update && apt-get install -y byacc bison diffutils flex make
@@ -32,8 +33,8 @@ RUN cd /build && curl -O https://www.hdfgroup.org/ftp/lib-external/jpeg/src/jpeg
 RUN cd /build && curl -O https://www.hdfgroup.org/ftp/lib-external/szip/${SZIP_VERSION}/src/szip-${SZIP_VERSION}.tar.gz
 RUN cd /build && curl -O http://www.hdfgroup.org/ftp/HDF/releases/HDF${HDF4_VERSION}/src/hdf-${HDF4_VERSION}.tar.gz
 RUN cd /build && curl -O http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-${HDF5_VERSION}.tar.gz
-RUN cd /build && curl -O ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NETCDF4_VERSION}.tar.gz
-
+RUN cd /build && curl -O ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NC4C_VERSION}.tar.gz
+RUN cd /build && curl -O ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-${NC4F_VERSION}.tar.gz
 
 # add zlib
 RUN cd /build && tar xzf zlib-${ZLIB_VERSION}.tar.gz && \
@@ -66,16 +67,24 @@ RUN cd /build && tar xzf hdf5-${HDF5_VERSION}.tar.gz && \
     cd hdf5-${HDF5_VERSION} && \
     ./configure --prefix="/usr" --disable-shared --with-pic --with-zlib="/usr" --enable-cxx --enable-fortran --enable-fortran2003 --with-pthread && make -j4 && make install
 
-# add netcdf
-# FIXME: failing with...
-# configure: error: Can't find or link to the hdf5 library. Use --disable-netcdf-4, or see config.log for errors.
-# but we don't need it for clavrx so skip for now
-#
-#RUN cd /build && tar xzf netcdf-${NETCDF4_VERSION}.tar.gz && \
-#    cd netcdf-${NETCDF4_VERSION} && \
-#    ./configure --prefix="/usr" --enable-hdf4 --enable-hdf4-file-tests --enable-fortran --disable-shared --disable-doxygen --disable-dap --with-pic  && make -j4 && make install
+# add netcdf-c
+RUN cd /build && tar xzf netcdf-${NC4C_VERSION}.tar.gz && \
+    cd netcdf-${NC4C_VERSION} && \
+    CPPFLAGS="-I/usr/include -I/usr/lib/x86_64-linux-gnu" \
+    LDFLAGS="-L/usr/lib -L/usr/lib/x86_64-linux-gnu" \
+    LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu \
+    LIBS="-ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz -lcurl" \
+    ./configure --prefix="/usr" --enable-hdf4 --enable-fortran --disable-shared --with-pic  && make -j4 && make install
 
+# add netcdf-fortran
+RUN cd /build && tar xzf netcdf-fortran-${NC4F_VERSION}.tar.gz && \
+    cd netcdf-fortran-${NC4F_VERSION} && \
+    CPPFLAGS="-I/usr/include -I/usr/lib/x86_64-linux-gnu" \
+    LDFLAGS="-L/usr/lib -L/usr/lib/x86_64-linux-gnu" \
+    LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu \
+    LIBS="-lnetcdf -ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz -lcurl" \
+    ./configure --disable-shared --prefix="/usr" --with-pic && make -j4 && make install
 
 # remove all the build cruft
-#RUN rm -rf /build
-#RUN rm -rf /usr/man
+RUN rm -rf /build
+RUN rm -rf /usr/man
