@@ -1,5 +1,12 @@
 # This image creates a common scientific build environment that includes:
 # gfortran, hdf4, hdf5, netcdf4
+
+# NOTE: nbearson/gfortran is a modified version of the official
+# docker gcc image that includes 6.1 support. Now that the official
+# image includes fortran, this line should change once a new build
+# of the gcc image is pushed to dockerhub.
+# to...
+# FROM gcc
 FROM nbearson/gfortran
 
 ENV ZLIB_VERSION 1.2.8
