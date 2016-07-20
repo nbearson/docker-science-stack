@@ -71,17 +71,18 @@ RUN cd /build && tar xzf netcdf-${NC4C_VERSION}.tar.gz && \
     CPPFLAGS="-I/usr/include -I/usr/lib/x86_64-linux-gnu" \
     LDFLAGS="-L/usr/lib -L/usr/lib/x86_64-linux-gnu" \
     LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu \
-    LIBS="-ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz -lcurl" \
-    ./configure --prefix="/usr" --enable-hdf4 --enable-fortran --disable-shared --with-pic  && make -j4 && make install
+    LIBS="-ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz" \
+    ./configure --prefix="/usr" --enable-hdf4 --disable-dap --disable-shared --with-pic  && make -j4 && make install
 
 # add netcdf-fortran
+# compiling against this requires -lnetcdff (note the extra f)
 RUN cd /build && tar xzf netcdf-fortran-${NC4F_VERSION}.tar.gz && \
     cd netcdf-fortran-${NC4F_VERSION} && \
     CPPFLAGS="-I/usr/include -I/usr/lib/x86_64-linux-gnu" \
     LDFLAGS="-L/usr/lib -L/usr/lib/x86_64-linux-gnu" \
     LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu \
-    LIBS="-lnetcdf -ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz -lcurl" \
-    ./configure --disable-shared --prefix="/usr" --with-pic && make -j4 && make install
+    LIBS="-lnetcdf -ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz" \
+    ./configure --prefix="/usr" --disable-dap --disable-shared --with-pic && make -j4 && make install
 
 # remove all the build cruft
 RUN rm -rf /build
