@@ -38,10 +38,10 @@ RUN cd /build && tar xzf jpegsrc.v${JPEG_VERSION}.tar.gz && \
     cd jpeg-${JPEG_VERSION} && \
     ./configure --prefix="/usr" && make -j4 && make install
 
-# add szip
-RUN cd /build && tar zxf szip-${SZIP_VERSION}.tar.gz && \
-    cd szip-${SZIP_VERSION} && \
-    ./configure --prefix="/usr" --disable-shared --with-pic && make -j4 && make install
+## add szip
+#RUN cd /build && tar zxf szip-${SZIP_VERSION}.tar.gz && \
+#    cd szip-${SZIP_VERSION} && \
+#    ./configure --prefix="/usr" --disable-shared --with-pic && make -j4 && make install
 
 # FIXME: HDF4 currently claims it cannot build shared libraries for fortran? wtf?
 # https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2016-January/009163.html
@@ -50,9 +50,7 @@ RUN cd /build && tar zxf szip-${SZIP_VERSION}.tar.gz && \
 # add hdf4
 RUN cd /build && tar xzf hdf-${HDF4_VERSION}.tar.gz && \
     cd hdf-${HDF4_VERSION} && \
-    export CFLAGS="-fPIC -DHAVE_NETCDF -DFALSE=0 -DTRUE=1 -fno-strict-aliasing" && \
-    export CXXFLAGS="-fPIC -DHAVE_NETCDF -DFALSE=0 -DTRUE=1 -fno-strict-aliasing" && \
-    ./configure --prefix="/usr" --disable-netcdf --enable-fortran --disable-shared --with-zlib="/usr" --with-szlib="/usr" --with-jpeg="/usr" && make -j4 && make install
+    ./configure --prefix="/usr" --disable-netcdf --enable-fortran --disable-shared --with-zlib="/usr" --with-jpeg="/usr" && make -j4 && make install
 
 # FIXME: CFLAGS & CXXFLAGS - do we need to unset?
 
