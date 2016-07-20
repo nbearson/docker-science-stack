@@ -60,8 +60,6 @@ RUN cd /build && tar xzf hdf-${HDF4_VERSION}.tar.gz && \
     cd hdf-${HDF4_VERSION} && \
     ./configure --prefix="/usr" --disable-netcdf --enable-fortran --disable-shared --with-zlib="/usr" --with-jpeg="/usr" && make -j4 && make install
 
-# FIXME: CFLAGS & CXXFLAGS - do we need to unset?
-
 # add hdf5
 RUN cd /build && tar xzf hdf5-${HDF5_VERSION}.tar.gz && \
     cd hdf5-${HDF5_VERSION} && \
