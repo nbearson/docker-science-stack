@@ -57,7 +57,7 @@ RUN cd /build && tar xzf hdf-${HDF4_VERSION}.tar.gz && \
 # add hdf5
 RUN cd /build && tar xzf hdf5-${HDF5_VERSION}.tar.gz && \
     cd hdf5-${HDF5_VERSION} && \
-    ./configure --prefix="/usr" --disable-shared --with-pic --with-zlib="/usr" --enable-cxx --enable-fortran --with-pthread --with-szlib="/usr" && make -j4 && make install
+    ./configure --prefix="/usr" --disable-shared --with-pic --with-zlib="/usr" --enable-cxx --enable-fortran --enable-fortran2003 --with-pthread && make -j4 && make install
 
 # add netcdf
 # FIXME: failing with...
