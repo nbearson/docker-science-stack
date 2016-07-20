@@ -1,4 +1,4 @@
-# science-stack-docker
+# docker-science-stack
 Docker cheatsheet:
 ```bash
 # Run the image, get a shell
