@@ -81,3 +81,8 @@ RUN cd /build && tar xzf netcdf-fortran-${NC4F_VERSION}.tar.gz && \
 # remove all the build cruft
 RUN rm -rf /build
 RUN rm -rf /usr/man
+
+# throw in some minor shell niceties
+RUN alias ls='ls --color=auto' && \
+    alias ll='ls -lGh $@'
+
