@@ -2,14 +2,14 @@
 Docker cheatsheet:
 ```bash
 # Run the image, get a shell
-docker run -t -i nbearson/science-stack /bin/bash
+docker run -t -i nbearson/docker-science-stack /bin/bash
 # Run the image, get a shell, and mount the current directory as /workspace
-docker run -it --rm -v "$PWD":/workspace -w /workspace nbearson/science-stack /bin/bash
+docker run -it --rm -v "$PWD":/workspace -w /workspace nbearson/docker-science-stack /bin/bash
 
 # Build the image from just the Dockerfile
-docker build -t nbearson/science-stack .
+docker build -t nbearson/docker-science-stack .
 # Push the built image to Dockerhub
-docker push nbearson/science-stack
+docker push nbearson/docker-science-stack
 ```
 
 # Why?
