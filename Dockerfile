@@ -83,6 +83,6 @@ RUN rm -rf /build
 RUN rm -rf /usr/man
 
 # throw in some minor shell niceties
-RUN alias ls='ls --color=auto' && \
-    alias ll='ls -lGh $@'
+RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc && \
+    echo 'alias ll="ls -lGh $@"' >> ~/.bashrc
 
