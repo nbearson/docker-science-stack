@@ -18,8 +18,7 @@ RUN apt-get update && apt-get install -y byacc bison diffutils flex make
 RUN apt-get install -y vim
 
 # get ready to build things
-RUN mkdir -p /usr/man/man1
-RUN mkdir /build
+RUN mkdir -p /build /usr/man/man1 /config
 
 # perform downloads first so they get cached during development; does it make any difference afterwards?
 RUN cd /build && curl -O http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz
@@ -33,17 +32,20 @@ RUN cd /build && curl -O ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-${
 # add zlib
 RUN cd /build && tar xzf zlib-${ZLIB_VERSION}.tar.gz && \
     cd zlib-${ZLIB_VERSION} && \
-    ./configure --prefix="/usr" && make -j4 && make install
+    ./configure --prefix="/usr" && make -j4 && make install && \
+    cp configure.log /config/config.log-zlib-${ZLIB_VERSION}
 
 # add libjpeg
 RUN cd /build && tar xzf jpegsrc.v${JPEG_VERSION}.tar.gz && \
     cd jpeg-${JPEG_VERSION} && \
-    ./configure --prefix="/usr" && make -j4 && make install
+    ./configure --prefix="/usr" && make -j4 && make install && \
+    cp config.log /config/config.log-jpeg-${JPEG_VERSION}
 
 ## add szip
 #RUN cd /build && tar zxf szip-${SZIP_VERSION}.tar.gz && \
 #    cd szip-${SZIP_VERSION} && \
-#    ./configure --prefix="/usr" --disable-shared --with-pic && make -j4 && make install
+#    ./configure --prefix="/usr" --disable-shared --with-pic && make -j4 && make install && \
+#    cp config.log /config/config.log-szip-${SZIP_VERSION}
 
 # FIXME: HDF4 currently claims it cannot build shared libraries for fortran? wtf?
 # https://lists.hdfgroup.org/pipermail/hdf-forum_lists.hdfgroup.org/2016-January/009163.html
@@ -52,12 +54,16 @@ RUN cd /build && tar xzf jpegsrc.v${JPEG_VERSION}.tar.gz && \
 # add hdf4
 RUN cd /build && tar xzf hdf-${HDF4_VERSION}.tar.gz && \
     cd hdf-${HDF4_VERSION} && \
-    ./configure --prefix="/usr" --disable-netcdf --enable-fortran --disable-shared --with-zlib="/usr" --with-jpeg="/usr" && make -j4 && make install
+    ./configure --prefix="/usr" --disable-netcdf --enable-fortran --disable-shared --with-zlib="/usr" --with-jpeg="/usr" && make -j4 && make install && \
+    cp config.log /config/config.log-hdf4-${HDF4_VERSION}
 
 # add hdf5
+# note - hdf5 post-1.8.11 now includes -ldl as a dependency
+# http://hdf-forum.184993.n3.nabble.com/Errors-compiling-against-Static-build-HDF5-1-8-11-Need-for-ldl-added-to-linker-arguments-td4026300.html
 RUN cd /build && tar xzf hdf5-${HDF5_VERSION}.tar.gz && \
     cd hdf5-${HDF5_VERSION} && \
-    ./configure --prefix="/usr" --disable-shared --with-pic --with-zlib="/usr" --enable-cxx --enable-fortran --enable-fortran2003 --with-pthread && make -j4 && make install
+    ./configure --prefix="/usr" --disable-shared --with-pic --with-zlib="/usr" --enable-cxx --enable-fortran --enable-fortran2003 --with-pthread && make -j4 && make install && \
+    cp config.log /config/config.log-hdf5-${HDF5_VERSION}
 
 # add netcdf-c
 RUN cd /build && tar xzf netcdf-${NC4C_VERSION}.tar.gz && \
@@ -66,7 +72,8 @@ RUN cd /build && tar xzf netcdf-${NC4C_VERSION}.tar.gz && \
     LDFLAGS="-L/usr/lib -L/usr/lib/x86_64-linux-gnu" \
     LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu \
     LIBS="-ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz" \
-    ./configure --prefix="/usr" --enable-hdf4 --disable-dap --disable-shared --with-pic  && make -j4 && make install
+    ./configure --prefix="/usr" --enable-hdf4 --disable-dap --disable-shared --with-pic  && make -j4 && make install && \
+    cp config.log /config/config.log-netcdf-${NC4C_VERSION}
 
 # add netcdf-fortran
 # compiling against this requires -lnetcdff (note the extra f)
@@ -76,7 +83,8 @@ RUN cd /build && tar xzf netcdf-fortran-${NC4F_VERSION}.tar.gz && \
     LDFLAGS="-L/usr/lib -L/usr/lib/x86_64-linux-gnu" \
     LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu \
     LIBS="-lnetcdf -ldf -lhdf5_hl -lhdf5 -ljpeg -ldl -lm -lz" \
-    ./configure --prefix="/usr" --disable-dap --disable-shared --with-pic && make -j4 && make install
+    ./configure --prefix="/usr" --disable-dap --disable-shared --with-pic && make -j4 && make install && \
+    cp config.log /config/config.log-netcdff-${NC4F_VERSION}
 
 # remove all the build cruft
 RUN rm -rf /build
