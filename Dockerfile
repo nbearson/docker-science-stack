@@ -106,12 +106,11 @@ RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
 RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc && \
     echo 'alias ll="ls -lGh $@"' >> ~/.bashrc
 
-RUN echo "export HDF4=${OPT}/hdf4" >> ~/.bashrc && \
-    echo "export HDF5=${OPT}/hdf5" >> ~/.bashrc && \
-    echo "export NETCDF=${OPT}/netcdf4" >> ~/.bashrc && \
-    echo "export LD_LIBRARY_PATH=${HDF4}/lib:${HDF5}/lib:${NETCDF}/lib:${LD_LIBRARY_PATH}" >> ~/.bashrc && \
-    echo "" >> ~/.bashrc
+# set these so future shells pick them up too
+ENV HDF4 ${OPT}/hdf4
+ENV HDF5 ${OPT}/hdf5
+ENV NETCDF ${OPT}/netcdf4
+ENV LD_LIBRARY_PATH ${HDF4}/lib:${HDF5}/lib:${NETCDF}/lib:${LD_LIBRARY_PATH}
 
-RUN echo "export PATH=${HDF4}/bin/:${HDF5}/bin:${NETCDF}/bin:${PATH}" >> ~/.bashrc && \
-    echo "" >> ~/.bashrc
+ENV PATH ${HDF4}/bin/:${HDF5}/bin:${NETCDF}/bin:${PATH}
 
