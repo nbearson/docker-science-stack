@@ -106,6 +106,7 @@ RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
 # add the nco utilities for basic netcdf manipulation
 RUN mkdir -p ${BUILD} ${OPT}/nco && cd ${BUILD} && \
     curl -OL https://github.com/nco/nco/archive/${NCO_VERSION}.tar.gz && \
+    tar xzf ${NCO_VERSION}.tar.gz && \
     cd nco-${NCO_VERSION} && \
     NETCDF_ROOT=${OPT}/netcdf4 ./configure --prefix=${OPT}/nco && \
     make && make install && \
