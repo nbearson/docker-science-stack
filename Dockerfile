@@ -102,6 +102,29 @@ RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
     cp config.log ${OPT}/netcdf4/config.log-netcdff-${NC4F_VERSION} && \
     rm -rf ${BUILD}
 
+## add uwglance for verifying data, etc.
+RUN apt-get install -y python-setuptools python-numpy python-scipy python-matplotlib python-mpltoolkits.basemap
+RUN easy_install -f http://larch.ssec.wisc.edu/cgi-bin/repos.cgi uwglance
+
+## add pyhdf for glance to read hdf4 files
+RUN mkdir -p ${BUILD} && cd ${BUILD} && \
+    wget http://hdfeos.org/software/pyhdf/pyhdf-${PYHDF_VERSION}.tar.gz && \
+    tar xzf pyhdf-${PYHDF_VERSION}.tar.gz && \
+    cd pyhdf-${PYHDF_VERSION} && \
+    INCLUDE_DIRS="${OPT}/hdf4/include/" \
+    LIBRARY_DIRS="${OPT}/hdf4/lib/" \
+    python setup.py install && \
+    rm -r ${BUILD}
+
+## add netcdf4-python for glance to read netcdf4 files
+RUN mkdir -p ${BUILD} && cd ${BUILD} && \
+    wget https://github.com/Unidata/netcdf4-python/archive/v${NETCDFPY_VERSION}.tar.gz && \
+    tar xzf v${NETCDFPY_VERSION}.tar.gz && \
+    cd netcdf4-python-${NETCDFPY_VERSION} && \
+    PATH="${OPT}/netcdf4/bin:$PATH" \
+    python setup.py install && \
+    rm -r ${BUILD}
+
 # throw in some shell niceties
 RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc && \
     echo 'alias ll="ls -lGh $@"' >> ~/.bashrc
