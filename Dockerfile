@@ -13,6 +13,7 @@ ENV HDF4_VERSION 4.2.12
 ENV HDF5_VERSION 1.8.17
 ENV NC4F_VERSION 4.4.4
 ENV NC4C_VERSION 4.4.1
+ENV NCO_VERSION 4.6.1
 
 # grab some packages we need
 RUN apt-get update && apt-get install -y byacc bison diffutils flex make
@@ -100,6 +101,14 @@ RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
     LIBS="-lnetcdf -ldf -lhdf5_hl -lhdf5 -ljpeg -lm -lz" \
     ./configure --prefix="${OPT}/netcdf4" --disable-dap --with-pic && make -j4 && make install && \
     cp config.log ${OPT}/netcdf4/config.log-netcdff-${NC4F_VERSION} && \
+    rm -rf ${BUILD}
+
+# add the nco utilities for basic netcdf manipulation
+RUN mkdir -p ${BUILD} ${OPT}/nco && cd ${BUILD} && \
+    curl -OL https://github.com/nco/nco/archive/${NCO_VERSION}.tar.gz && \
+    cd nco-${NCO_VERSION} && \
+    NETCDF_ROOT=${OPT}/netcdf4 ./configure --prefix=${OPT}/nco && \
+    make && make install && \
     rm -rf ${BUILD}
 
 ## add uwglance for verifying data, etc.
