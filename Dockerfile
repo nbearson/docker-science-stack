@@ -14,6 +14,8 @@ ENV HDF5_VERSION 1.8.17
 ENV NC4F_VERSION 4.4.4
 ENV NC4C_VERSION 4.4.1
 ENV NCO_VERSION 4.6.1
+ENV PYHDF_VERSION 0.9.0
+ENV NETCDFPY_VERSION 1.2.4rel
 
 # grab some packages we need
 RUN apt-get update && apt-get install -y byacc bison diffutils flex make
