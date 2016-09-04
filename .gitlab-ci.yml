@@ -1,0 +1,21 @@
+# see: https://about.gitlab.com/2016/05/23/gitlab-container-registry/
+# for now we can also add deploy
+# for now, just build
+
+image: docker:latest
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t docker-science-stack .
+
+deploy:
+  stage: deploy
+  script:
+    - echo "DEPLOY PLACEHOLDER"
+#    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.example.com
+#    - docker push registry.example.com/my-group/my-project:latest
