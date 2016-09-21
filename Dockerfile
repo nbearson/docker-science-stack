@@ -29,7 +29,7 @@ RUN mkdir -p ${OPT}
 # add zlib
 #RUN apt-get install -y zlib-devel
 RUN mkdir -p ${BUILD} && cd ${BUILD} && \
-    curl -O http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz && \
+    wget -q http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz && \
     tar xzf zlib-${ZLIB_VERSION}.tar.gz && \
     cd zlib-${ZLIB_VERSION} && \
     ./configure && make -j4 && make install && \
@@ -39,7 +39,7 @@ RUN mkdir -p ${BUILD} && cd ${BUILD} && \
 # add libjpeg
 #RUN apt-get install -y jpeg-devel
 RUN mkdir -p ${BUILD} && cd ${BUILD} && \
-    curl -O https://www.hdfgroup.org/ftp/lib-external/jpeg/src/jpegsrc.v${JPEG_VERSION}.tar.gz && \
+    wget -q https://www.hdfgroup.org/ftp/lib-external/jpeg/src/jpegsrc.v${JPEG_VERSION}.tar.gz && \
     tar xzf jpegsrc.v${JPEG_VERSION}.tar.gz && \
     cd jpeg-${JPEG_VERSION} && \
     ./configure && make -j4 && make install && \
@@ -47,7 +47,7 @@ RUN mkdir -p ${BUILD} && cd ${BUILD} && \
     rm -rf ${BUILD}
 
 ## add szip
-#RUN mkdir -p ${BUILD} && cd ${BUILD} && curl -O https://www.hdfgroup.org/ftp/lib-external/szip/${SZIP_VERSION}/src/szip-${SZIP_VERSION}.tar.gz && \
+#RUN mkdir -p ${BUILD} && cd ${BUILD} && wget -q https://www.hdfgroup.org/ftp/lib-external/szip/${SZIP_VERSION}/src/szip-${SZIP_VERSION}.tar.gz && \
 #    tar zxf szip-${SZIP_VERSION}.tar.gz && \
 #    cd szip-${SZIP_VERSION} && \
 #    ./configure --prefix="/usr" --disable-shared --with-pic && make -j4 && make install && \
@@ -56,7 +56,7 @@ RUN mkdir -p ${BUILD} && cd ${BUILD} && \
 
 # add hdf4
 RUN mkdir -p ${BUILD} ${OPT}/hdf4 && cd ${BUILD} && \
-    curl -O http://www.hdfgroup.org/ftp/HDF/releases/HDF${HDF4_VERSION}/src/hdf-${HDF4_VERSION}.tar.gz && \
+    wget -q http://www.hdfgroup.org/ftp/HDF/releases/HDF${HDF4_VERSION}/src/hdf-${HDF4_VERSION}.tar.gz && \
     tar xzf hdf-${HDF4_VERSION}.tar.gz && \
     cd hdf-${HDF4_VERSION} && \
     CFLAGS="-fPIC -DHAVE_NETCDF -fno-strict-aliasing" \
@@ -71,7 +71,7 @@ RUN mkdir -p ${BUILD} ${OPT}/hdf4 && cd ${BUILD} && \
 # note - hdf5 post-1.8.11 now includes -ldl as a dependency
 # http://hdf-forum.184993.n3.nabble.com/Errors-compiling-against-Static-build-HDF5-1-8-11-Need-for-ldl-added-to-linker-arguments-td4026300.html
 RUN mkdir -p ${BUILD} ${OPT}/hdf5 && cd ${BUILD} && \
-    curl -O https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-${HDF5_VERSION}/src/hdf5-${HDF5_VERSION}.tar.gz && \
+    wget -q https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-${HDF5_VERSION}/src/hdf5-${HDF5_VERSION}.tar.gz && \
     tar xzf hdf5-${HDF5_VERSION}.tar.gz && \
     cd hdf5-${HDF5_VERSION} && \
     ./configure --prefix="${OPT}/hdf5" --with-pic --with-zlib="${OPT}/zlib" --enable-cxx --enable-fortran --enable-fortran2003 --with-pthread && make -j4 && make install && \
@@ -80,7 +80,7 @@ RUN mkdir -p ${BUILD} ${OPT}/hdf5 && cd ${BUILD} && \
 
 # add netcdf-c
 RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
-    curl -O ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NC4C_VERSION}.tar.gz && \
+    wget -q ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-${NC4C_VERSION}.tar.gz && \
     tar xzf netcdf-${NC4C_VERSION}.tar.gz && \
     cd netcdf-${NC4C_VERSION} && \
     CPPFLAGS="-I${OPT}/hdf4/include -I${OPT}/hdf5/include" \
@@ -94,7 +94,7 @@ RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
 # add netcdf-fortran
 # compiling against this requires -lnetcdff (note the extra f)
 RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
-    curl -O ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-${NC4F_VERSION}.tar.gz && \
+    wget -q ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-${NC4F_VERSION}.tar.gz && \
     tar xzf netcdf-fortran-${NC4F_VERSION}.tar.gz && \
     cd netcdf-fortran-${NC4F_VERSION} && \
     CPPFLAGS="-I${OPT}/hdf4/include -I${OPT}/hdf5/include -I${OPT}/netcdf4/include" \
@@ -107,7 +107,7 @@ RUN mkdir -p ${BUILD} ${OPT}/netcdf4 && cd ${BUILD} && \
 
 # add the nco utilities for basic netcdf manipulation
 RUN mkdir -p ${BUILD} ${OPT}/nco && cd ${BUILD} && \
-    curl -OL https://github.com/nco/nco/archive/${NCO_VERSION}.tar.gz && \
+    wget -qL https://github.com/nco/nco/archive/${NCO_VERSION}.tar.gz && \
     tar xzf ${NCO_VERSION}.tar.gz && \
     cd nco-${NCO_VERSION} && \
     NETCDF_ROOT=${OPT}/netcdf4 ./configure --prefix=${OPT}/nco && \
@@ -120,7 +120,7 @@ RUN easy_install -f http://larch.ssec.wisc.edu/cgi-bin/repos.cgi uwglance
 
 ## add pyhdf for glance to read hdf4 files
 RUN mkdir -p ${BUILD} && cd ${BUILD} && \
-    wget http://hdfeos.org/software/pyhdf/pyhdf-${PYHDF_VERSION}.tar.gz && \
+    wget -q http://hdfeos.org/software/pyhdf/pyhdf-${PYHDF_VERSION}.tar.gz && \
     tar xzf pyhdf-${PYHDF_VERSION}.tar.gz && \
     cd pyhdf-${PYHDF_VERSION} && \
     INCLUDE_DIRS="${OPT}/hdf4/include/" \
@@ -130,7 +130,7 @@ RUN mkdir -p ${BUILD} && cd ${BUILD} && \
 
 ## add netcdf4-python for glance to read netcdf4 files
 RUN mkdir -p ${BUILD} && cd ${BUILD} && \
-    wget https://github.com/Unidata/netcdf4-python/archive/v${NETCDFPY_VERSION}.tar.gz && \
+    wget -q https://github.com/Unidata/netcdf4-python/archive/v${NETCDFPY_VERSION}.tar.gz && \
     tar xzf v${NETCDFPY_VERSION}.tar.gz && \
     cd netcdf4-python-${NETCDFPY_VERSION} && \
     PATH="${OPT}/netcdf4/bin:$PATH" \
