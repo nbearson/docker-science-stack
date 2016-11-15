@@ -6,6 +6,7 @@ FROM gcc:latest
 ENV BUILD /build
 ENV OPT /opt
 
+# last checked for updates Nov 14 2016
 ENV ZLIB_VERSION 1.2.8
 ENV JPEG_VERSION 6b
 ENV SZIP_VERSION 2.1
@@ -148,4 +149,3 @@ ENV NETCDF ${OPT}/netcdf4
 ENV LD_LIBRARY_PATH ${HDF4}/lib:${HDF5}/lib:${NETCDF}/lib:${LD_LIBRARY_PATH}
 
 ENV PATH ${HDF4}/bin/:${HDF5}/bin:${NETCDF}/bin:${PATH}
-
