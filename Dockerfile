@@ -22,7 +22,7 @@ ENV NETCDFPY_VERSION 1.2.4rel
 RUN apt-get update && apt-get install -y byacc bison diffutils flex make
 
 # grab some convenience packages for using it as a build "machine"
-RUN apt-get install -y vim less tree screen unzip cvs subversion gdb valgrind
+RUN apt-get install -y vim less tree screen unzip cvs subversion git gdb valgrind
 
 # this is our install dir for everything non-core
 RUN mkdir -p ${OPT}
