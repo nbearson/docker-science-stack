@@ -11,7 +11,7 @@ ENV ZLIB_VERSION 1.2.8
 ENV JPEG_VERSION 6b
 ENV SZIP_VERSION 2.1
 ENV HDF4_VERSION 4.2.12
-ENV HDF5_VERSION 1.8.17
+ENV HDF5_VERSION 1.10.0-patch1
 ENV NC4F_VERSION 4.4.4
 ENV NC4C_VERSION 4.4.1
 ENV NCO_VERSION 4.6.1
@@ -71,11 +71,14 @@ RUN mkdir -p ${BUILD} ${OPT}/hdf4 && cd ${BUILD} && \
 # add hdf5
 # note - hdf5 post-1.8.11 now includes -ldl as a dependency
 # http://hdf-forum.184993.n3.nabble.com/Errors-compiling-against-Static-build-HDF5-1-8-11-Need-for-ldl-added-to-linker-arguments-td4026300.html
+
+# looks like maybe we can work around it with a build flag?
+# https://support.hdfgroup.org/ftp/HDF5/releases/ReleaseFiles/hdf5-1.10.0-patch1-RELEASE.txt
 RUN mkdir -p ${BUILD} ${OPT}/hdf5 && cd ${BUILD} && \
-    wget -q https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-${HDF5_VERSION}/src/hdf5-${HDF5_VERSION}.tar.gz && \
-    tar xzf hdf5-${HDF5_VERSION}.tar.gz && \
+    wget -q https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-${HDF5_VERSION}/src/hdf5-${HDF5_VERSION}.tar.bz2 && \
+    tar xjf hdf5-${HDF5_VERSION}.tar.bz2 && \
     cd hdf5-${HDF5_VERSION} && \
-    ./configure --prefix="${OPT}/hdf5" --with-pic --with-zlib="${OPT}/zlib" --enable-cxx --enable-fortran --enable-fortran2003 --with-pthread && make -j4 && make install && \
+    ./configure --prefix="${OPT}/hdf5" --with-pic --with-zlib="${OPT}/zlib" --enable-cxx --enable-fortran --enable-fortran2003 --with-pthread --with-default-api-version=v18 && make -j4 && make install && \
     cp config.log ${OPT}/hdf5/config.log-hdf5-${HDF5_VERSION} && \
     rm -rf ${BUILD}
 
