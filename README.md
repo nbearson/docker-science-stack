@@ -19,6 +19,7 @@ docker push nbearson/docker-science-stack
 * netCDF `$NETCDF`
 * NCO utilities
 * Python 2.7
+  * uwglance
   * pyhdf
   * netcdf4-python
 
