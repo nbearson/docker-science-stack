@@ -38,21 +38,25 @@ RUN mkdir -p ${BUILD} && cd ${BUILD} && \
     rm -rf ${BUILD}
 
 # add libjpeg
-#RUN apt-get install -y jpeg-devel
-RUN mkdir -p ${BUILD} && cd ${BUILD} && \
-    wget -q https://www.hdfgroup.org/ftp/lib-external/jpeg/src/jpegsrc.v${JPEG_VERSION}.tar.gz && \
-    tar xzf jpegsrc.v${JPEG_VERSION}.tar.gz && \
-    cd jpeg-${JPEG_VERSION} && \
-    ./configure && make -j4 && make install && \
-    cp config.log ${OPT}/config.log-jpeg-${JPEG_VERSION} && \
-    rm -rf ${BUILD}
+# NOTE: this has moved to: http://www.ijg.org/
+# ... can we just use the one in debian instead?
+#     https://packages.debian.org/search?keywords=libjpeg
+RUN apt-get install -y libjpeg-dev
+# RUN mkdir -p ${BUILD} && cd ${BUILD} && \
+#     wget -q https://www.hdfgroup.org/ftp/lib-external/jpeg/src/jpegsrc.v${JPEG_VERSION}.tar.gz && \
+#     tar xzf jpegsrc.v${JPEG_VERSION}.tar.gz && \
+#     cd jpeg-${JPEG_VERSION} && \
+#     ./configure && make -j4 && make install && \
+#     cp config.log ${OPT}/config.log-jpeg-${JPEG_VERSION} && \
+#     rm -rf ${BUILD}
 
 ## add szip
-#RUN mkdir -p ${BUILD} && cd ${BUILD} && wget -q https://www.hdfgroup.org/ftp/lib-external/szip/${SZIP_VERSION}/src/szip-${SZIP_VERSION}.tar.gz && \
+#RUN mkdir -p ${BUILD} && cd ${BUILD} && \
+#    wget -q https://www.hdfgroup.org/ftp/lib-external/szip/${SZIP_VERSION}/src/szip-${SZIP_VERSION}.tar.gz && \
 #    tar zxf szip-${SZIP_VERSION}.tar.gz && \
 #    cd szip-${SZIP_VERSION} && \
-#    ./configure --prefix="/usr" --disable-shared --with-pic && make -j4 && make install && \
-#    cp config.log /config/config.log-szip-${SZIP_VERSION} && \
+#    ./configure --prefix="/usr" --with-pic && make -j4 && make install && \
+#    cp config.log /opt/config.log-szip-${SZIP_VERSION} && \
 #    rm -rf ${BUILD}
 
 # add hdf4
@@ -122,15 +126,15 @@ RUN mkdir -p ${BUILD} ${OPT}/nco && cd ${BUILD} && \
 RUN apt-get install -y python-setuptools python-numpy python-scipy python-matplotlib python-mpltoolkits.basemap
 RUN easy_install -f http://larch.ssec.wisc.edu/cgi-bin/repos.cgi uwglance
 
-## add pyhdf for glance to read hdf4 files
-RUN mkdir -p ${BUILD} && cd ${BUILD} && \
-    wget -q http://hdfeos.org/software/pyhdf/pyhdf-${PYHDF_VERSION}.tar.gz && \
-    tar xzf pyhdf-${PYHDF_VERSION}.tar.gz && \
-    cd pyhdf-${PYHDF_VERSION} && \
-    INCLUDE_DIRS="${OPT}/hdf4/include/" \
-    LIBRARY_DIRS="${OPT}/hdf4/lib/" \
-    python setup.py install && \
-    rm -r ${BUILD}
+# ## add pyhdf for glance to read hdf4 files
+# RUN mkdir -p ${BUILD} && cd ${BUILD} && \
+#     wget -q http://hdfeos.org/software/pyhdf/pyhdf-${PYHDF_VERSION}.tar.gz && \
+#     tar xzf pyhdf-${PYHDF_VERSION}.tar.gz && \
+#     cd pyhdf-${PYHDF_VERSION} && \
+#     INCLUDE_DIRS="${OPT}/hdf4/include/" \
+#     LIBRARY_DIRS="${OPT}/hdf4/lib/" \
+#     python setup.py install && \
+#     rm -r ${BUILD}
 
 ## add netcdf4-python for glance to read netcdf4 files
 RUN mkdir -p ${BUILD} && cd ${BUILD} && \
